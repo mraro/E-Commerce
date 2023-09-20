@@ -1,0 +1,21 @@
+{% load i18n %}     {% comment %}  THIS SERVES TO TRANSLATE {% endcomment %}
+
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+	{% include 'partials/head.html' %}
+    <title>{% block 'title' %}   {% endblock 'title' %} </title>
+	
+</head>
+<body>
+	{% comment %} {% include 'partials/side_menu.html' %} {% endcomment %}
+	{% include 'partials/header.html' %}	
+	{% include 'partials/messages.html' %}
+	
+	{% block 'content' %} 			{% endblock 'content' %}				
+	{% include 'partials/pagination.html' %}
+
+	{% include 'partials/footer.html' %}
+	
+</body>
+</html>

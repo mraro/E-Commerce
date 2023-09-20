@@ -1,0 +1,16 @@
+{% extends 'global/base.html' %}
+{% load i18n %}
+
+{% block 'title' %}Login{% endblock 'title' %}
+{% block 'content' %}
+
+    {% if not user.is_authenticated %}
+    {% comment %} <div class="login-box"> {% endcomment %}
+        {% include 'partials/form.html' %}
+        {% comment %} <p>Sem uma conta ainda? <a href=" {% url 'authors:register' %} " class="a2">Cadastre-se!</a></p> {% endcomment %}
+    {% comment %} </div> {% endcomment %}
+    {% else %}
+    <div class="center"><h1>{% translate "You are logued with " %}{{ user }} {% translate "if want to change, do logout first." %}</h1></div>
+    {% endif %}
+
+{% endblock 'content' %}

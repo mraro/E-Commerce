@@ -1,0 +1,14 @@
+{% extends 'global/base.html' %}
+{% load i18n %}
+
+{% block 'title' %}
+{{ title }}
+{% endblock 'title' %}
+
+{% block 'content' %}
+<div class="main-content-container">
+
+    {% include 'partials/form.html' %}
+       
+</div>
+{% endblock 'content' %}

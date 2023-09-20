@@ -1,0 +1,22 @@
+{% extends 'global/base.html' %}
+{% load i18n %}
+ 
+ {% comment %} GLOBAL É UMA PASTA NA RAIZ DO APP NO MESMO NIVEL DO PROJETO {% endcomment %}
+
+ 	{% block 'title' %}
+ 	HOME
+ 	{% endblock 'title' %}
+
+ 	{% block 'content' %}
+	<div class="main-content-container">
+
+        {% for obj in goods  %}
+        {% comment %} {{remedio}}<br> {% endcomment %}
+        {% include 'partials/card-view.html' %}	
+        {{ goods }}
+        {% empty %}
+            <h1> {% translate "Out of stock" %} </h1>
+        {% endfor %}
+		
+	</div>
+ 	{% endblock 'content' %}
