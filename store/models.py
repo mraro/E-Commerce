@@ -52,11 +52,7 @@ class E_Commerce(models.Model):  # ISSO É UMA TABELA NO DJANGO
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     update_at = models.DateTimeField(auto_now=True, verbose_name=_("Update at"))
     is_available = models.BooleanField(default=False, verbose_name=_("Is Available"))
-    cover = models.ImageField(upload_to='covers/%Y/%m/%d/',
-                              blank=True,
-                              default='static/images/default.jpg',
-                              verbose_name="Cover/Image")  # campo de imagem
-    # (blank=True permite campo vazio, default é a imagem padrão caso não exista
+
 
     category = models.ForeignKey(
         E_Category, on_delete=models.SET_NULL, null=True, blank=True, default=None, verbose_name=_("Category"),
@@ -71,6 +67,12 @@ class E_Commerce(models.Model):  # ISSO É UMA TABELA NO DJANGO
     # )
     # MANY TO MANY
     tags = models.ManyToManyField(TAG, verbose_name="TAG", blank=True)
+    cover = models.ImageField(upload_to='covers/%Y/%m/%d/',
+                              blank=True,
+                              default='static/images/default.jpg',
+                              verbose_name="Cover/Image")  # campo de imagem
+    # (blank=True permite campo vazio, default é a imagem padrão caso não exista
+
 
     def __str__(self):
         return self.title

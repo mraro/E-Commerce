@@ -57,7 +57,8 @@ class EditObjectForm(forms.ModelForm):
 
             'cover': forms.FileInput(
                 attrs={
-                    'class': 'image-object'
+                    'class': 'image-object',
+                    'onchange' : "previewImagem()",
                 }
             ),
             'quantity': forms.Select(attrs={'class': 'quantity-object'},

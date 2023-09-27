@@ -1,7 +1,17 @@
 {% load i18n %}     {% comment %}  THIS SERVES TO TRANSLATE {% endcomment %}
 
 <header>
-	
+	{% if request.user.is_authenticated %}
+	<form method="post" class="login-link" action="{% url 'authors:logout' %}">
+		{% csrf_token %}
+	 
+	 <button type="submit" name="username" value="{{request.user}}">{{request.user|title}} <i class="fa fa-sign-out" aria-hidden="true"></i></button>
+	</form>
+    {% else %}
+    <a   class="login-link"  href={% url 'authors:login' %}> Fazer login <i class="fa fa-sign-in" aria-hidden="true"></i> </a>  
+        
+    {% endif %}  
+
 	<a href="{% url 'store:home' %}">
 		<h1  class="titulo-container">
 	    	{{nameSite}}
@@ -18,4 +28,15 @@
 			<button type="submit" class="search-button"><i class="fas fa-search"></i></button>
 	</form>		
 	
+
+    <div class="options-header">
+        <ul>
+            <a href="" class='button-options-header'><li>Colares</li></a>
+            <a href="" class='button-options-header'><li>Brincos</li></a>
+            <a href="" class='button-options-header'><li>Anéis</li></a>
+            <a href="" class='button-options-header'><li>Conjuntos</li></a>
+
+        </ul>
+    </div>
+
 </header>

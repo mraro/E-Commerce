@@ -9,11 +9,12 @@
 
  	{% block 'content' %}
 	<div class="main-content-container">
-
+        <div class="merchan">
+            <a href="http://" target="_blank" rel="noopener noreferrer"></a>
+        </div>
         {% for obj in goods  %}
         {% comment %} {{remedio}}<br> {% endcomment %}
         {% include 'partials/card-view.html' %}	
-        {{ goods }}
         {% empty %}
             <h1> {% translate "Out of stock" %} </h1>
         {% endfor %}

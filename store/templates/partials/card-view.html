@@ -2,61 +2,88 @@
 
 {% if obj.is_available %}
 	{% if is_detail %}
+		<div class="merchan">
+			<a href="http://" target="_blank" rel="noopener noreferrer"></a>
+		</div>
+
 		<div class="object-view-detail">
+				{% if obj.cover.url != "" %}
+					<img class="obj-img" src= {{ obj.cover.url }} >
+				{% else %}
+					<img class="obj-img" src="/media/static/images/default.jpg" >
+				{% endif %}
 	{% else %}
 		<div class="object-view">
+			<a  href=" {{ obj.get_absolute_url }} ">
+			
+				{% if obj.cover.url != "" %}
+					<img class="obj-img" src= {{ obj.cover.url }} >
+				{% else %}
+					<img class="obj-img" src="/media/static/images/default.jpg" >
+				{% endif %}
+			</a>
+		
 	{% endif %}
 	
-	<a  href=" {{ obj.get_absolute_url }} ">
-	{% if obj.cover.url != "" %}
-		<img class="obj-img" src= {{ obj.cover.url }} >
-	{% else %}
-		<img class="obj-img" src="/media/static/images/default.jpg" >
-	{% endif %}
-	</a>
+	
 
 
-	<p class="object-view-name">  {{ obj.title }}  </p>
+		<div class="box-price-to-cart">
 
-		<p class="object-view-price">  R$ {{ obj.price|floatformat:2 }}  </p>
+		{% if not is_detail %}
+			<b><p class="object-view-price">  R$ {{ obj.price|floatformat:2 }}  </p></b>
+		{% endif %}
+
 		
-		<p>
-			{% comment %} {{ obj.description }} {% endcomment %}
-			{% comment %} {% if obj.author.first_name != None %}
-				{% if obj.author.first_name %} 
-					{% translate "Made by: " %} {{ obj.author_full_name}} <br>
-					{{ obj.author_full_name }}
-				{% else %}
-					{% translate "Made by: " %} {{ obj.author.username}} <br>
-				{% endif %}
-			{% else %}
-				{% translate "Unknow Autor" %} <br>
-			{% endif %} {% endcomment %}
-			
-			{% comment %} {% translate "Creation date: " %} {{ obj.created_at|date:"d/m/Y" }} às {{ obj.created_at|date:"H:i"}} <br> {% endcomment %}
-			{% if obj.category.id is not None %}
-			<a href="{%  url 'store:category' obj.category.id %}">{% translate "Category: " %} {{obj.category}} </a>
-			{% endif %}
-			
-		</p>
 		
 		{% if not is_detail %}
 		{% comment %} <a  class="object-view-button" href=" {% url 'farmacia:obj' obj.id %} "><span>Adicionar ao Carrinho</span></a> {% endcomment %}
 		<div class="buttons-container">
 			<a  class="object-car-button" href=" {{ obj.get_absolute_url }} "><span> {% translate "Add to Cart" %}</span></a>
-			<a  class="object-view-button" href=" {{ obj.get_absolute_url }} "><span> {% translate "To View" %}</span></a>
+			<a  class="object-view-button" href=" {{ obj.get_absolute_url }} "><span> {% translate "Buy" %}</span></a>
 		</div>
 		{% else %}
-		TAGS:
-		{% for tag in obj.tags.all %}
-		<a href="{% url 'store:tag' tag.slug %}">
-			{{ tag }}
-		</a>
-		{% endfor %}
-		<div class="descripition-detail">
-			{{ obj.description }}
+		<div class="description-detail">
+	<p class="object-view-name">  {{ obj.title }}  </p>
+
+			<p>
+				{% comment %} {{ obj.description }} {% endcomment %}
+				{% comment %} {% if obj.author.first_name != None %}
+					
+				
+				
+				{% comment %} {% translate "Creation date: " %} {{ obj.created_at|date:"d/m/Y" }} às {{ obj.created_at|date:"H:i"}} <br> {% endcomment %}
+				{% if obj.category.id is not None %}
+				<a href="{%  url 'store:category' obj.category.id %}">{% translate "Category: " %} {{obj.category}} </a>
+				{% endif %}
+				
+			</p>
+			TAGS:
+			{% for tag in obj.tags.all %}
+			<a href="{% url 'store:tag' tag.slug %}">
+				{{ tag }}
+			</a>
+			{% endfor %}
+			<div class="descripition-detail">
+				{{ obj.description }}
+			</div>
 		</div>
 		{% endif %}
+	</div>
 		
 	</div>
+	{% if is_detail %}
+		<div class="box-buying">
+			<p class="object-view-name">  {{ obj.title }}  </p>
+
+			<p class="object-view-price-detail">  R$ {{ obj.price|floatformat:2 }}  </p>
+			<p class="object-view-quantity-detail">Quantity<input type="number" name="qtd" id="qtd-buy"></p>
+			<button>ADD to cart</button>
+			<br>
+			Frete
+			<input type="number" name="cep" id="cep">
+			<button>check frete</button>
+
+		</div>
+	{% endif %}
 {% endif %}

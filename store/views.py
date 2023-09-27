@@ -18,6 +18,7 @@ OBJ_PER_PAGE = int(os.environ.get("OBJ_PER_PAGE", 9))
 
 # THIS MAKES THE SAME THING OF func home {
 class ObjectListViewBase(ListView):
+
     # This is what I can overwrite
     # allow_empty = True
     # queryset = None
@@ -47,6 +48,8 @@ class ObjectListViewBase(ListView):
         return querySetLight
 
     def get_context_data(self, *args, **kwargs):
+        nameSite = str(os.environ.get("NAME_ENTERPRISE", "No name"))
+
         context = super().get_context_data(*args, **kwargs)
         pages = make_pagination(self.request, context.get('goods'), RANGE_PER_PAGE, OBJ_PER_PAGE)
         category = E_Category.objects.filter(e_commerce__isnull=False, e_commerce__is_available=True).distinct()
@@ -54,9 +57,9 @@ class ObjectListViewBase(ListView):
         context.update(
             {'goods': pages['goods_page'],
              'pages': pages,
-             'nameSite': 'NAME !!!',
              'categories': category,
              'language': language,
+             'nameSite': nameSite,
              }
         )
         return context  # UPDATE CONTEXT, IN THE OTHER WORDS, CUSTOMIZE WEB TEMPLATE WITH MY PAGINATION FUNC
@@ -76,7 +79,7 @@ class CategoryView(ObjectListViewBase):
 
     def get_queryset(self, *args, **kwargs):  # RETURN A QUERYSET IN THE ORDER WORDS READ DATABASE
         querySet = super(CategoryView, self).get_queryset()
-        querySet = querySet.filter(category__id=self.kwargs.get('idcategoria')).order_by(
+        querySet = querySet.filter(category__id=self.kwargs.get('idcategory')).order_by(
             '-id')  # (FILTER) send data to web template html
         querySetLight = querySet.select_related('author', 'category').prefetch_related(
             'tags')  # ! THIS IMPROVE DATABASE READ
@@ -85,14 +88,14 @@ class CategoryView(ObjectListViewBase):
 
     def get_context_data(self, *args, **kwargs):
         context = super(CategoryView, self).get_context_data()
-        medicines = context.get('e_commerce')
-        pages = make_pagination(self.request, medicines, RANGE_PER_PAGE, OBJ_PER_PAGE)
+        goods = context.get('goods')
+        pages = make_pagination(self.request, goods, RANGE_PER_PAGE, OBJ_PER_PAGE)
         context.update(
             {
-                # 'remedios': medicine,
-                'goods': pages['medicines_page'],
+                # 'goods': medicine,
+                'goods': pages['goods_page'],
                 'pages': pages,
-                'categoryTitle': f'{medicines[0].category.name}',  # ISSO É PY: F'{ VARIAVEL}' RETORNA STRING
+                'categoryTitle': f'{goods[0].category.name}',  # ISSO É PY: F'{ VARIAVEL}' RETORNA STRING
                 'is_detail': False,
             }
         )
@@ -121,10 +124,10 @@ class SearchView(ObjectListViewBase):
         var_site = self.request.GET.get('q')
         var_site = var_site.strip()  # # '''o | juntamente a função Q faz com que a pesquisa seja OR '''
 
-        pages = make_pagination(self.request, context.get('remedios'), RANGE_PER_PAGE, OBJ_PER_PAGE)
+        pages = make_pagination(self.request, context.get('goods'), RANGE_PER_PAGE, OBJ_PER_PAGE)
         context.update(
             {
-                'remedios': pages['medicines_page'],
+                'goods': pages['goods_page'],
                 'pages': pages,
                 'search_done': var_site,
             }
@@ -152,10 +155,10 @@ class TagView(ObjectListViewBase):
         context = super(TagView, self).get_context_data()
         # var_site = self.kwargs.get('slug')
 
-        pages = make_pagination(self.request, context.get('remedios'), RANGE_PER_PAGE, OBJ_PER_PAGE)
+        pages = make_pagination(self.request, context.get('goods'), RANGE_PER_PAGE, OBJ_PER_PAGE)
         context.update(
             {
-                'remedios': pages['medicines_page'],
+                'goods': pages['goods_page'],
                 'pages': pages,
                 # 'title': var_site
             }
@@ -172,8 +175,10 @@ class Goods_View(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(Goods_View, self).get_context_data()
+        nameSite = str(os.environ.get("NAME_ENTERPRISE", "No name"))
 
         context.update({
             'is_detail': True,
+            'nameSite':nameSite,
         })
         return context
