@@ -1,6 +1,4 @@
-# from inspect import signature
 from random import randint
-from faker import Faker
 
 import re
 
@@ -20,12 +18,8 @@ def rand_ratio():
     return randint(840, 900), randint(473, 573)
 
 
-fake = Faker('pt_BR')
-
-
 def make_strong_string():
     print("".join(sr().choices(s.ascii_letters + s.punctuation, k=64)))
 
 
-# print(signature(fake.random_number))
 

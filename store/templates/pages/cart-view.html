@@ -1,0 +1,37 @@
+{% extends 'global/base.html' %}
+{% load i18n %}
+
+{% block 'title' %}
+{{ title }}
+{% endblock 'title' %}
+
+{% block 'content' %}
+{{current_cart}}
+<div class="main-content-container">
+    <div class="content-cart">
+    {% for obj in current_cart %}
+        <div class="cart-peace">
+            <a href={{ obj.e_commerce.get_absolute_url }}>
+            <img class='img-cart-peace' src={{obj.e_commerce.get_default_image}} alt="">
+            <div class='title-cart-peace'><h3>{{obj.e_commerce}}</h3><span>{{obj.e_commerce.description}}</span></div>
+            <div class="qtity-cart-peace">
+                <p>{{obj.qtde}}</p>
+            
+                <form action={% url "store:cart" %} method='post'>
+                    {% csrf_token %}
+                    <input type="hidden" name="_method" value="delete">
+                    <input type="hidden" value={{obj.pk}} name="id-obj-to-remove">
+                    <button type='submit' class="remove-all">❌</button>
+                </form>
+
+            </div>
+        </a>
+        </div>
+        <br>
+
+        {% empty %}
+        <a href={% url "store:home" %}> <h1>Cart empty add someone here </h1></a>
+    {% endfor %}
+    </div>
+</div>
+{% endblock 'content' %}

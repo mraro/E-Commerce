@@ -1,11 +1,14 @@
+import json
 import os
+import re
+
 import dotenv
+import unicodedata
 
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.core.checks import messages
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
@@ -13,10 +16,13 @@ from django.views.generic import ListView
 from django.utils.translation import gettext_lazy as _  # TRANSLATE as _
 
 from authors.forms import EditObjectForm
+from commerce.settings import BASE_DIR
 from store import models
-from store.models import E_Commerce
+from store.models import E_Commerce, Covers
 
 dotenv.load_dotenv()
+
+
 # THIS DECORATOR IS UTIL LIKE A FUNC BASE TO VIEW, BUT HERE WE HAVE TO USER @method_decorator and in the end use
 # name='dispatch' to refer where @login_required will be affecting (dispatch is in doc of django)
 @method_decorator(login_required(login_url='authors:login', redirect_field_name='next'), name='dispatch')
@@ -44,10 +50,10 @@ class BaseObjectClassedView(View):
     def get(self, request, pk=None):
         """ WHEN HAS A GET DATA TO USE """
         goods = self.get_objects_to_view(pk)
-        print(goods)
         form = EditObjectForm(  # EditObjectForm is class made to load fields, clean e some think else
             instance=goods  # fill the fields with sent data
         )
+
         return self.render_view(form, pk)
 
     def post(self, request, pk=None):
@@ -59,12 +65,45 @@ class BaseObjectClassedView(View):
             files=request.FILES or None,
             instance=goods  # if none receive what will be edited
         )
-        print(pk)
+
+        # breakpoint()
         if form.is_valid():
-            object_data = form.save(commit=False)
-            # object_data.is_available = False
-            object_data.author = author
-            object_data.save()
+            # instance = super().save(commit=False)
+            # object_data = form.save(commit=False)
+            instance = form.save(commit=False)
+
+            multiview_images = []
+            # print(instance, " - ", files)
+            for file in form.files.getlist('cover'):
+
+                # Gere um nome único para cada arquivo, por exemplo, usando um timestamp
+                filename = f"imagem_{instance.title}_{file.name}"
+                # Remove acentuação e caracteres especiais
+                filename = ''.join(
+                    c for c in unicodedata.normalize('NFD', filename) if unicodedata.category(c) != 'Mn')
+                # Remove espaços e mantém apenas o último ponto antes da extensão
+                filename = re.sub(r'\s+', '_', filename)  # Remove espaços duplicados
+                filename = re.sub(r'[^\w\s.-]', '', filename)
+                filename = re.sub(r'(?<=\w)(\s)(?=[^.]*\.[^.]*$)', '-', filename)
+
+                filepath = os.path.join("media/covers/", filename)
+                # Salve o arquivo no sistema de arquivos local
+                with open(filepath, 'wb') as destination:
+                    for chunk in file.chunks():
+                        destination.write(chunk)
+
+                # Adicione o caminho do arquivo ao seu modelo ou lista de imagens
+                multiview_images.append('/'+ filepath)
+
+            # Salve os caminhos das imagens em seu modelo ou como preferir
+            instance.cover = json.dumps(multiview_images)
+
+            # instance.save()
+            # return instance
+
+            instance.is_available = True
+            instance.author = author
+            instance.save()
 
             if pk is not None:
                 messages.success(request, _('Product Saved'))
@@ -107,7 +146,7 @@ class DashboardView(ListView):
     template_name = 'pages/dashboard.html'
     nameSite = str(os.environ.get("NAME_ENTERPRISE", "No name"))
 
-    extra_context = {'nameSite': nameSite,}
+    extra_context = {'nameSite': nameSite, }
 
     def get_queryset(self):
         query = super().get_queryset()

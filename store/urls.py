@@ -11,8 +11,8 @@ urlpatterns = [
     path("search/", SearchView.as_view(), name="search"),
     path("tag/<slug:slug>", TagView.as_view(), name="tag"),
     path("category/<int:idcategory>/", CategoryView.as_view(), name="category"),
-    path("remedios/<int:pk>/", Goods_View.as_view(), name="goods"),
-
+    path("G/<int:pk>/", Goods_View.as_view(), name="goods"),
+    path("cart/", Cart_View.as_view(), name='cart'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

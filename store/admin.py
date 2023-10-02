@@ -1,8 +1,9 @@
-
 from django.contrib import admin
 
 # from tags.models import TAG
-from .models import E_Category, E_Commerce
+from .models import E_Category, E_Commerce, E_Cart, E_Composition, Covers
+
+
 # from django.contrib.contenttypes.admin import GenericStackedInline
 
 
@@ -31,3 +32,21 @@ class CommerceAdmin(admin.ModelAdmin):
         "slug": ('title',)  # this copy title and make a slug text in slug field
     }
     autocomplete_fields = 'tags',
+
+
+@admin.register(E_Cart)
+class E_CartAdmin(admin.ModelAdmin):
+    list_display = 'id', 'e_commerce', 'author', 'qtde'
+    list_display_links = 'id', 'e_commerce', 'author'
+    search_fields = 'id', 'e_commerce', 'author', 'qtde'
+    list_per_page = 20
+    ordering = '-id',
+
+
+@admin.register(E_Composition)
+class E_CartAdmin(admin.ModelAdmin):
+    ...
+
+@admin.register(Covers)
+class CoverAdmin(admin.ModelAdmin):
+    ...

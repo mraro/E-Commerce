@@ -1,0 +1,108 @@
+/* DASHBOARD ######################################################## */
+.dashboard-container-object-views{
+	width: 100%;
+	max-width: 100rem;
+	margin: 0px auto;
+	display: grid;
+
+}
+.dashboard-container-object-views a{
+	color:#000;
+}
+.dashboard-content ul{
+	list-style: none;
+	grid-column: span 2;
+}
+
+.td-delete td{
+	border-bottom: 1px solid var(--color-background-secundary);
+	width: 10rem;
+	margin: 0px;
+	padding: 0px;
+}
+.form-delete{
+	width: 1em;
+	height: 1em;
+	background: #00000000;
+	margin: 0.5rem auto;
+}
+#button-delete{
+	font-size: inherit;
+	outline: 0 !important;
+	border: 0 !important;
+	background: #00000000;
+	transition: all ease-in-out 0.3s;
+	cursor: pointer;
+	margin: 0px;
+	padding: 0px;
+}
+.link-add{
+	float: right;
+	font-size: 3rem;
+	text-align: center;
+	color: #000;	
+	left: 50%;
+    transform: translateX(-50%);
+}
+/* #### FORMS ################################################################################# */
+.form-content{
+	/* position: absolute; */
+	background-color: white;
+
+	z-index: 30;
+	font-size: 1.4rem;
+	width: 900px;
+	margin: 1% auto;
+	display: flex;
+	flex-direction: column;
+	padding: 0.5rem;
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+	border-radius: 0.5rem;
+	-webkit-border-radius: 0.5rem;
+	-moz-border-radius: 0.5rem;
+	-ms-border-radius: 0.5rem;
+	-o-border-radius: 0.5rem;
+	}
+	input, select, button, textarea{
+	font-size: 1.4rem;
+	/* padding: 0.39rem  1.0rem; */
+	margin: 0.2rem;
+	max-width: 99%;
+	}
+	textarea {
+		width: 95%; /* Ocupar 100% da largura do contêiner pai */
+		height: 10rem; /* Altura fixa de 20rem (320px, aproximadamente) */
+		border: 1px solid #ccc; /* Borda opcional para o textarea */
+		padding: 10px; /* Espaçamento interno dentro do textarea */
+	}
+	.cover{
+		max-width: 40rem;
+		max-height: 40rem;
+		margin: 0 auto;
+	}
+	#help-text{
+	font-size: smaller;
+	color: var(--color-success-dark);
+	}
+	.input-text-form-out-obj{
+	align-self: right;
+	width: 5rem;
+	right: 0;
+	}
+	.error{
+	font-size: 0.7rem;
+	color: var(--color-error-dark);
+	}
+	.span-2 {
+	grid-column: span 2;
+	flex: 1 1 100%;
+	}
+/* cover */
+	.container{
+		margin-top: 5rem;
+		margin-left: auto;
+		margin-right: auto;
+	  }
+	  .card{
+		margin: auto;
+	  }

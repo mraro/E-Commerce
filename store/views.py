@@ -1,13 +1,21 @@
 import os
 
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db.models import Q, Value, F
 from django.db.models.functions import Concat
-from django.shortcuts import get_list_or_404, Http404  # object é para um só elemento
-from django.views.generic import ListView, DetailView
+from django.shortcuts import get_list_or_404, Http404, redirect  # object é para um só elemento
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.generic import ListView, DetailView, TemplateView
 from django.utils import translation
 
-from store.models import E_Commerce, E_Category
+from authors.models import Profile
+from store.models import E_Commerce, E_Category, E_Cart
 from utility.paginator import make_pagination
+
+from django.utils.translation import gettext_lazy as _  # TRANSLATE as _
 
 # Create your views here.
 
@@ -16,9 +24,9 @@ RANGE_PER_PAGE = int(os.environ.get("RANGE_PER_PAGE", 6))
 OBJ_PER_PAGE = int(os.environ.get("OBJ_PER_PAGE", 9))
 
 
+
 # THIS MAKES THE SAME THING OF func home {
 class ObjectListViewBase(ListView):
-
     # This is what I can overwrite
     # allow_empty = True
     # queryset = None
@@ -49,7 +57,7 @@ class ObjectListViewBase(ListView):
 
     def get_context_data(self, *args, **kwargs):
         nameSite = str(os.environ.get("NAME_ENTERPRISE", "No name"))
-
+        cart = E_Cart.objects.get_full_cart(request=self.request)  # CARRINHO
         context = super().get_context_data(*args, **kwargs)
         pages = make_pagination(self.request, context.get('goods'), RANGE_PER_PAGE, OBJ_PER_PAGE)
         category = E_Category.objects.filter(e_commerce__isnull=False, e_commerce__is_available=True).distinct()
@@ -60,6 +68,7 @@ class ObjectListViewBase(ListView):
              'categories': category,
              'language': language,
              'nameSite': nameSite,
+             'cart': cart
              }
         )
         return context  # UPDATE CONTEXT, IN THE OTHER WORDS, CUSTOMIZE WEB TEMPLATE WITH MY PAGINATION FUNC
@@ -179,6 +188,48 @@ class Goods_View(DetailView):
 
         context.update({
             'is_detail': True,
-            'nameSite':nameSite,
+            'nameSite': nameSite,
         })
         return context
+
+
+# @method_decorator(login_required(login_url='authors:login', redirect_field_name='next'), name='dispatch')
+class Cart_View(TemplateView):
+    template_name = 'pages/cart-view.html'
+
+    def get(self, request, *args, **kwargs):
+        nameSite = str(os.environ.get("NAME_ENTERPRISE", "No name"))
+
+        current_cart = E_Cart.objects.get_full_cart(request=request)
+        print("CURRENT ",current_cart)
+        kwargs.update({'current_cart':current_cart,
+                       'nameSite': nameSite,
+                       })
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get("_method") == 'delete': # DROP DO CARRINHO
+            print()
+            goods = E_Cart.objects.get(pk=request.POST.get('id-obj-to-remove'))
+            titulo = goods.e_commerce.title
+            translated_success = _('deleted')
+            translated_fail = _("wasn't deleted")
+            if goods.delete():
+                messages.success(self.request, f"{titulo} {translated_success}!")
+            else:
+                messages.error(self.request, f"{titulo} {translated_fail}!")
+
+        else:
+            user = request.user
+            id_obj = request.POST.get("id-obj")
+            qtd = request.POST.get("qtd")
+
+            E_Cart.objects.set_item_cart(request=request, id_obj=id_obj, qtd_bought=qtd)
+            # return self.get(request, *args, **kwargs)
+
+        return redirect(reverse('store:cart'))
+
+    def delete(self, request, *args, **kwargs):
+        print("DELETE")
+        return self.get(request, *args, **kwargs)
