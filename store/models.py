@@ -132,57 +132,7 @@ class Covers(models.Model):
 
 # Carrinho
 class Manage_cart(Manager):
-    def set_item_cart(self, request, id_obj, qtd_bought):
-
-        instance_obj = E_Commerce.objects.get(pk=int(id_obj))
-        # se o usuario estiver logado adicione no carrinho particular
-        if request.user.is_authenticated:
-            check_exists = E_Cart.objects.filter(e_commerce=instance_obj, author=request.user).exists()
-            # se ja existe o item no carrinho modifique seu valor
-            if check_exists:
-                update = E_Cart.objects.get(e_commerce=instance_obj)
-                update.qtde += int(qtd_bought)
-                update.save()
-            # senão crie um carrinho particular
-            else:
-                E_Cart.objects.create(e_commerce=instance_obj, author=request.user, qtde=qtd_bought).save()
-                del id_obj
-                del qtd_bought
-                del instance_obj
-
-        # senão estiver logado adicione em uma session
-        else:
-            instance = {'e_commerce': id_obj, 'qtde': qtd_bought}
-            if request.session.get('cart_session') is None:
-                request.session['cart_session'] = [instance]
-                print("CRIA ", request.session['cart_session'])
-            else:
-
-                request.session['cart_session'].append(instance)
-                print("ADD ", request.session['cart_session'])
-
-
-    def get_full_cart(self, request):
-        if request.user.is_authenticated:
-            return E_Cart.objects.filter(author=request.user)
-        else:
-            # del request.session['cart_session']
-            # como o formato que chega do session é bruto, precisa tratar
-            data_to_convert = request.session.get('cart_session')
-            # if request.session.get('cart_session') is not None:
-            #     json_data = request.session.get('cart_session')
-            #     for item in json_data: # TODO obj.e_commerce qtde
-            #         data_to_convert.append({
-            #             'e_commerce': E_Commerce.objects.get(pk=item['fields']['e_commerce']),
-            #             'qtde': item['fields']['qtde']
-            #         })
-
-            return data_to_convert
-
-    def remove_item_cart(self, user, id_obj):
-        item = E_Cart.objects.get(user=user, e_commerce=id_obj)
-        item.drop()
-        return True
+    ...
 
 
 class E_Cart(models.Model):

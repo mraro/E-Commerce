@@ -12,6 +12,7 @@ from django.views.generic import ListView, DetailView, TemplateView
 from django.utils import translation
 
 from authors.models import Profile
+from base_class.view_base import Base_Global_Objects
 from store.models import E_Commerce, E_Category, E_Cart
 from utility.paginator import make_pagination
 
@@ -22,6 +23,7 @@ from django.utils.translation import gettext_lazy as _  # TRANSLATE as _
 # constant (means that not be modified, but you can in .env file) it's a var global too.
 RANGE_PER_PAGE = int(os.environ.get("RANGE_PER_PAGE", 6))
 OBJ_PER_PAGE = int(os.environ.get("OBJ_PER_PAGE", 9))
+
 
 
 
@@ -57,7 +59,7 @@ class ObjectListViewBase(ListView):
 
     def get_context_data(self, *args, **kwargs):
         nameSite = str(os.environ.get("NAME_ENTERPRISE", "No name"))
-        cart = E_Cart.objects.get_full_cart(request=self.request)  # CARRINHO
+        # cart = self.get_full_cart(request=self.request)  # CARRINHO
         context = super().get_context_data(*args, **kwargs)
         pages = make_pagination(self.request, context.get('goods'), RANGE_PER_PAGE, OBJ_PER_PAGE)
         category = E_Category.objects.filter(e_commerce__isnull=False, e_commerce__is_available=True).distinct()
@@ -68,7 +70,7 @@ class ObjectListViewBase(ListView):
              'categories': category,
              'language': language,
              'nameSite': nameSite,
-             'cart': cart
+             # 'cart': cart
              }
         )
         return context  # UPDATE CONTEXT, IN THE OTHER WORDS, CUSTOMIZE WEB TEMPLATE WITH MY PAGINATION FUNC
@@ -194,16 +196,15 @@ class Goods_View(DetailView):
 
 
 # @method_decorator(login_required(login_url='authors:login', redirect_field_name='next'), name='dispatch')
-class Cart_View(TemplateView):
+class Cart_View(TemplateView, Base_Global_Objects):
     template_name = 'pages/cart-view.html'
 
     def get(self, request, *args, **kwargs):
-        nameSite = str(os.environ.get("NAME_ENTERPRISE", "No name"))
 
-        current_cart = E_Cart.objects.get_full_cart(request=request)
+        current_cart = self.get_full_cart(request=request)
         print("CURRENT ",current_cart)
         kwargs.update({'current_cart':current_cart,
-                       'nameSite': nameSite,
+                       'nameSite': self.store_name,
                        })
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
@@ -221,11 +222,12 @@ class Cart_View(TemplateView):
                 messages.error(self.request, f"{titulo} {translated_fail}!")
 
         else:
-            user = request.user
             id_obj = request.POST.get("id-obj")
             qtd = request.POST.get("qtd")
 
-            E_Cart.objects.set_item_cart(request=request, id_obj=id_obj, qtd_bought=qtd)
+            self.set_item_cart(request=request, id_obj=id_obj, qtd_bought=qtd)
+            print("after ", request.session['cart_session'])
+
             # return self.get(request, *args, **kwargs)
 
         return redirect(reverse('store:cart'))

@@ -1,54 +1,57 @@
 {% load i18n %}
 
 {% if obj.is_available %}
-	{% if is_detail %}
-		<div class="merchan">
-			<a href="http://" target="_blank" rel="noopener noreferrer"></a>
-		</div>
+		{% if is_detail %} {% comment %} DETAIL PAGE {% endcomment %}
+			<div class="merchan">
+				<a href="http://" target="_blank" rel="noopener noreferrer"></a>
+			</div>
 
-		<div class="object-view-detail">
-			{% for img in obj.get_multiview_images_list %}
-				<img class="obj-img" src={{img}} >
-			{% endfor %}
+			<div class="object-view-detail">
+				{% for img in obj.get_multiview_images_list %}
+					<img class="obj-img" src={{img}} >
+				{% endfor %}
 
-	{% else %}
-		<div class="object-view">
-			<a  href=" {{ obj.get_absolute_url }} ">
-			
+		{% else %} {% comment %} MAIN PAGE {% endcomment %}
+			<div class="object-view">
+				<a  href=" {{ obj.get_absolute_url }} ">
 				
-				{% if obj.cover.url != "" %}
-					<img class="obj-img" src={{obj.get_default_image}} >
-				{% else %}
-					<img class="obj-img" src="/media/static/images/default.jpg" >
-				{% endif %}
-			</a>
-		
-	{% endif %}
+					
+					{% if obj.cover.url != "" %}
+						<img class="obj-img" src={{obj.get_default_image}} >
+					{% else %}
+						<img class="obj-img" src="/media/static/images/default.jpg" >
+					{% endif %}
+				</a>
+				<h3 class="title-objview-main">{{obj.title}}</h3>
+				<p class="description-main-page">
+					{{obj.description}}
+				</p>
+		{% endif %} {% comment %} end MAIN PAGE {% endcomment %}
 	
 	
 
 
 		<div class="box-price-to-cart">
 
-		{% if not is_detail %}
+		{% if not is_detail %} {% comment %} MAIN PAGE {% endcomment %}
 			<b><p class="object-view-price">  R$ {{ obj.price|floatformat:2 }}  </p></b>
-		{% endif %}
+		{% endif %} {% comment %} end MAIN PAGE {% endcomment %}
 
 		
 		
-		{% if not is_detail %}
-		{% comment %} <a  class="object-view-button" href=" {% url 'farmacia:obj' obj.id %} "><span>Adicionar ao Carrinho</span></a> {% endcomment %}
+		{% if not is_detail %} {% comment %} MAIN PAGE {% endcomment %}
+
 		<div class="buttons-container">
 		
 			{% comment %} <a  class="object-car-button" href=" {{ obj.add_cart }} "><span> {% translate "Add to Cart" %}</span></a> {% endcomment %}
 			<a  class="object-view-button" href=" {{ obj.get_absolute_url }} "><span> {% translate "Buy" %}</span></a>
 		</div>
-		{% else %}
+		{% else %} {% comment %} end MAIN PAGE {% endcomment %}
 		<div class="description-detail">
 			<p class="object-view-name">  {{ obj.title }}  </p>
 
 			<p>
-				{% comment %} {{ obj.description }} {% endcomment %}
+				{{ obj.description }}
 				{% comment %} {% if obj.author.first_name != None %}
 
 				{% comment %} {% translate "Creation date: " %} {{ obj.created_at|date:"d/m/Y" }} às {{ obj.created_at|date:"H:i"}} <br> {% endcomment %}
@@ -71,7 +74,7 @@
 	</div>
 		
 	</div>
-	{% if is_detail %}
+	{% if is_detail %} {% comment %} DETAIL PAGE {% endcomment %}
 		<div class="box-buying">
 			<p class="object-view-name">  {{ obj.title }}  </p>
 			<form class="cart" action={% url "store:cart" %} method="POST" enctype="multipart/form-data">
@@ -90,5 +93,5 @@
 			<button>Check Shipping</button>
 
 		</div>
-	{% endif %}
+	{% endif %} {% comment %} end DETAIL PAGE {% endcomment %}
 {% endif %}

@@ -42,7 +42,7 @@ class E_Commerce_Serializer(serializers.ModelSerializer):  # noqa
         view_name='store:remedio_rest',
         # tem que passar o lookup_field, caso contrario não encontrará o campo # noqa
     )
-    title = serializers.CharField(read_only=True, max_length=65)
+    title = serializers.CharField(read_only=True, max_length=40)
     description = serializers.CharField(read_only=True, )
     slug = serializers.SlugField(read_only=True, )
     price = serializers.FloatField(read_only=True, default=1)
@@ -89,7 +89,7 @@ class Dashboard_Serializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(read_only=True, )
     # link_dashboard_remedio = serializers.HyperlinkedIdentityField(source='id', view_name='authors:edit_rest')
-    title = serializers.CharField(min_length=4, max_length=65, label='Title')
+    title = serializers.CharField(min_length=4, max_length=40, label='Title')
     slug = serializers.HiddenField(default=slugify(str(title)))
     # TO DJANGO SEND FORM PROPERLY, IN ORDER TO MAKE A SLUGFY LATER, BEFORE SEND TO IS_VALID
     price = serializers.DecimalField(min_value=0.00, max_digits=4, decimal_places=2, label='Price')

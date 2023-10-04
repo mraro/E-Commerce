@@ -12,12 +12,13 @@
         <div class="merchan">
             <a href="http://" target="_blank" rel="noopener noreferrer"></a>
         </div>
+        <div class="content-goods">
         {% for obj in goods  %}
         {% comment %} {{remedio}}<br> {% endcomment %}
         {% include 'partials/card-view.html' %}	
         {% empty %}
             <h1> {% translate "Out of stock" %} </h1>
         {% endfor %}
-		
+        </div>
 	</div>
  	{% endblock 'content' %}
