@@ -4,7 +4,7 @@
 <html lang="{{ language }}">
 <head>
 	{% include 'partials/head.html' %}
-    <title>{% block 'title' %}   {% endblock 'title' %} </title>
+    <title>{{nameSite}} {% block 'title' %}   {% endblock 'title' %} </title>
 	
 </head>
 <body>
@@ -14,7 +14,7 @@
 	
 	{% block 'content' %} 			{% endblock 'content' %}				
 	{% include 'partials/pagination.html' %}
-
+	{% include 'partials/social-midia.html' %}
 	{% include 'partials/footer.html' %}
 	
 </body>

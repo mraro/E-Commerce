@@ -9,19 +9,17 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 from django.contrib.messages import constants
 
-#from utility.env_func import string_to_list, get_env_var
+# from utility.env_func import string_to_list, get_env_var
 from datetime import timedelta
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -33,7 +31,6 @@ SECRET_KEY = "django-insecure-vf)%*23pnbb36i82nop$-r%-9%y3_@p_+aawi82@weg2aa1(bg
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -49,7 +46,10 @@ INSTALLED_APPS = [
     "authors",
     "tags",
     # debug:
-    #"debug_toolbar",
+    "debug_toolbar",
+    # especial
+    "django_sass_compiler",
+    "compressor",
 ]
 
 MIDDLEWARE = [
@@ -61,6 +61,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.locale.LocaleMiddleware",  # was me that add this
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "commerce.urls"
@@ -85,7 +86,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "commerce.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -96,7 +96,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -104,11 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", },
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -133,6 +131,14 @@ STATICFILES_DIRS = [
 ]
 # STATIC_ROOT serve pra usar o comando  " python manage.py collectstatic "  QUE CRIA O PACOTE DE STATIC
 STATIC_ROOT = BASE_DIR / 'static'
+
+STATICFILES_FINDERS = ('django.contrib.staticfiles.finders.FileSystemFinder',
+                       'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+                       'compressor.finders.CompressorFinder',
+                       )
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -153,3 +159,9 @@ MESSAGE_TAGS = {
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+SASS_COMPILER_ENABLED = True
+SASS_COMPILER_INCLUDE_DIRS = [
+    os.path.join(BASE_DIR, 'static/sass'),  # Diretório de origem do seu SCSS
+]
+SASS_COMPILER_OUTPUT_DIR = 'static/css'  # Diretório de destino para os arquivos CSS compilados

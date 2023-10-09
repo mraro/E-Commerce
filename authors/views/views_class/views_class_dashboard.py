@@ -6,6 +6,7 @@ import re
 import unicodedata
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -47,8 +48,13 @@ class BaseObjectClassedView(View, Base_Global_Objects):
     def get(self, request, pk=None):
         """ WHEN HAS A GET DATA TO USE """
         goods = self.get_objects_to_view(pk)
+        cover = str(goods.cover)
+        goods.cover = json.loads(cover)
+        print(goods.cover)
+        # files = <MultiValueDict: {'cover': [<InMemoryUploadedFile: HD 1.jpg (image/jpeg)>, <InMemoryUploadedFile: HD 2.jpg (image/jpeg)>, <InMemoryUploadedFile: HD 3.jpg (image/jpeg)>, <InMemoryUploadedFile: HD 4.jpg (image/jpeg)>]}>
         form = EditObjectForm(  # EditObjectForm is class made to load fields, clean e some think else
-            instance=goods  # fill the fields with sent data
+            instance=goods,  # fill the fields with sent data
+            # files=E_Commerce.objects.get_multiview_images_list()
         )
 
         return self.render_view(form, pk)
@@ -56,7 +62,6 @@ class BaseObjectClassedView(View, Base_Global_Objects):
     def post(self, request, pk=None):
         goods = self.get_objects_to_view(pk)
         author = models.User.objects.get(username=request.user)
-
         form = EditObjectForm(
             data=request.POST or None,  # receive a request data or none
             files=request.FILES or None,
@@ -64,11 +69,14 @@ class BaseObjectClassedView(View, Base_Global_Objects):
         )
 
         # breakpoint()
+
+
         if form.is_valid():
 
             instance = form.save(commit=False)
 
             multiview_images = []
+
             position = 0
             for file in form.files.getlist('cover'):
                 position += 1
@@ -138,7 +146,7 @@ class DashboardView(ListView, Base_Global_Objects):
     # page_kwarg = "page"
     ordering = ['-id']  # ORDERBY
     template_name = 'pages/dashboard.html'
-    # nameSite = str(os.environ.get("NAME_ENTERPRISE", "No name"))
+    extra_context = {'nameSite': str(os.environ.get("NAME_ENTERPRISE", "No name")) }
 
 
     def get_queryset(self):

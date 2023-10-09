@@ -9,34 +9,10 @@ from django.views.generic.edit import BaseCreateView, ProcessFormView
 from django.utils.translation import gettext_lazy as _  # TRANSLATE as _
 
 from authors.forms import RegisterForm, LoginForm
-
-"""
-- LoginView - exibe um formulário de login e processa os dados de entrada
-- LogoutView - encerra a sessão do usuário e redireciona para outra URL
-- PasswordChangeView - exibe um formulário para alterar a senha do usuário e processa os dados de entrada
-- PasswordResetView - exibe um formulário para redefinir a senha do usuário e processa os dados de entrada
-- PasswordResetConfirmView - exibe um formulário para confirmar a redefinição da senha do usuário e processa os dados de entrada
-
-- TemplateView - exibe um único template
-- ListView - exibe um conjunto de objetos em um template
-- DetailView - exibe detalhes de um objeto específico em um template
-- FormView - exibe um formulário e processa dados de entrada
-- CreateView - exibe um formulário para criar um novo objeto e processa os dados de entrada
-- UpdateView - exibe um formulário para atualizar um objeto existente e processa os dados de entrada
-- DeleteView - exibe um formulário para excluir um objeto existente e processa os dados de entrada
-
-- RedirectView - redireciona o usuário para outra URL
-- ArchiveIndexView - exibe um índice de objetos arquivados
-- YearArchiveView - exibe um índice de objetos arquivados por ano
-- MonthArchiveView - exibe um índice de objetos arquivados por mês
-- DayArchiveView - exibe um índice de objetos arquivados por dia
-- DateDetailView - exibe detalhes de um objeto arquivado específico
-- WeekArchiveView - exibe um índice de objetos arquivados por semana
-- TodayArchiveView - exibe um índice de objetos arquivados para o dia atual
-""" # noqa
+from base_class.view_base import Base_Global_Objects
 
 
-class Register_View(FormView):
+class Register_View(FormView, Base_Global_Objects):
     form_class = RegisterForm
     template_name = 'pages/register_view.html'
 
@@ -48,11 +24,14 @@ class Register_View(FormView):
             'form': RegisterForm(session_data),
             'form_action': reverse('authors:register_create'),
             'form_button': _('Register'),
+            'nameSite': self.store_name,
+            'current_cart': self.get_full_cart(request=self.request),
+
         })
         return context
 
 
-class Register_Create(BaseCreateView):
+class Register_Create(BaseCreateView, Base_Global_Objects):
     def get(self, *args):
         raise Http404()
 
@@ -76,7 +55,7 @@ class Register_Create(BaseCreateView):
         return redirect('authors:register')
 
 
-class Login_View(FormView):
+class Login_View(FormView, Base_Global_Objects):
     form_class = LoginForm
     template_name = 'pages/login_view.html'
 
@@ -85,6 +64,9 @@ class Login_View(FormView):
         context.update({
             'form_action': reverse('authors:authenticate'),
             'form_button': 'Login',
+            'nameSite': self.store_name,
+            'current_cart': self.get_full_cart(request=self.request),
+
         })
         return context
 

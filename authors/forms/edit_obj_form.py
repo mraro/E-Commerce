@@ -18,18 +18,24 @@ class EditObjectForm(forms.ModelForm):
 
         # add_attr(self.fields.get('slug'), 'type', 'hidden')
 
-    title = forms.CharField(min_length=4, max_length=40, label=_('Title'))
+    title = forms.CharField(min_length=4, max_length=40, label=_('Title: '))
     slug = forms.CharField(widget=forms.HiddenInput(), empty_value=" ", label="")  # HERE I HAD TO GIVE SOME FAKE DATA
     # TO DJANGO SEND FORM PROPERLY, IN ORDER TO MAKE A SLUGFY LATER, BEFORE SEND TO IS_VALID
-    price = forms.DecimalField(min_value=0.00, max_value=100000.00, decimal_places=2, label=_('Price'))
-    quantity = forms.IntegerField(min_value=1, max_value=1000000, label=_('Quantity'))
+    price = forms.DecimalField(min_value=0.00, max_value=100000.00, decimal_places=2, label=_('Price: '))
+    quantity = forms.IntegerField(min_value=1, max_value=1000000, label=_('Quantity: '))
     cover = forms.FileField(widget=forms.TextInput(attrs={
         "name": "images",
         "type": "File",
-        "class": "form-control",
+        "class": "upload__inputfile",
         "multiple": "True",
+        "data-max_length" : "6",
+        "data-min_length": 1,
     }), label="", required=False)
     # cover = forms.ClearableFileInput(attrs={'multiple': True})
+
+    def clean_cover(self):
+        if len(self.files.getlist('cover')) == 0:
+            raise ValidationError(_('One image at least!'))
 
     def clean_slug(self):
         # print("Clean Slug")
@@ -49,40 +55,15 @@ class EditObjectForm(forms.ModelForm):
             raise ValidationError(_('This Title already in use'))
         return title
 
-    # def save(self, commit=True):
-    #     instance = super().save(commit=False)
-    #     files = self.cleaned_data['files']
-    #     multiview_images = []
-    #     print(instance," - ", files)
-    #     for file in files:
-    #         # Gere um nome único para cada arquivo, por exemplo, usando um timestamp
-    #         filename = f"imagem_{(self.title)}_{file.name}"
-    #         # Especifique o caminho onde deseja salvar os arquivos localmente
-    #         filepath = BASE_DIR.join("covers/", filename)
-    #
-    #         # Salve o arquivo no sistema de arquivos local
-    #         with open(filepath, 'wb') as destination:
-    #             for chunk in file.chunks():
-    #                 destination.write(chunk)
-    #
-    #         # Adicione o caminho do arquivo ao seu modelo ou lista de imagens
-    #         multiview_images.append(filepath)
-    #
-    #     # Salve os caminhos das imagens em seu modelo ou como preferir
-    #     instance.multiview_images = json.dumps(multiview_images)
-    #
-    #     if commit:
-    #         instance.save()
-    #     return instance
 
     class Meta:
         model = E_Commerce  # database
-        fields = 'title', 'price', 'quantity', 'description', 'tags', 'category', 'composition', 'cover', 'slug',
+        fields = 'title', 'price', 'quantity', 'category', 'composition', 'tags', 'description', 'cover', 'slug',
         # exclude = []
         labels = {
-            # 'title': 'Titulo: ',
+            # 'title': _('Title: '),
             'description': _('Description: '),
-            # 'price': 'Preço: ',
+            # 'price': _('Price: '),
             'quantity': _('Quantity: '),
             'category': _('Category: '),
             'composition': _('Composition: '),

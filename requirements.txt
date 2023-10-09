@@ -1,15 +1,23 @@
 asgiref==3.6.0
 async-generator==1.10
 attrs==22.2.0
+beautifulsoup4 @ file:///C:/b/abs_0agyz1wsr4/croot/beautifulsoup4-split_1681493048687/work
+cachetools==5.3.0
+certifi @ file:///C:/b/abs_85o_6fm0se/croot/certifi_1671487778835/work/certifi
 cffi==1.15.1
 chardet==5.1.0
+charset-normalizer==3.1.0
 colorama==0.4.6
 coverage==7.1.0
 Django==4.1.5
+django-appconf==1.0.5
 django-bower==5.2.0
+django-compressor==4.4
 django-cors-headers==3.14.0
+django-libsass==0.9
 django-phonenumber-field==7.0.2
 django-phonenumbers==1.0.1
+django-sass-compiler==1.1.0
 django-scheduler==0.10.1
 django-test==0.4030
 django_debug_toolbar==3.8.1
@@ -18,33 +26,60 @@ djangorestframework-simplejwt==5.2.2
 docopt==0.6.2
 exceptiongroup==1.1.0
 Faker==15.3.4
+fpdf==1.7.2
+google-api-core==2.11.0
+google-api-python-client==2.86.0
+google-auth==2.17.3
+google-auth-httplib2==0.1.0
+googleapis-common-protos==1.59.0
+gunicorn==20.1.0
 h11==0.14.0
+httplib2==0.22.0
 icalendar==5.0.4
 idna==3.4
 iniconfig==2.0.0
+libsass==0.22.0
 outcome==1.2.0
 packaging==23.0
+parameterized @ file:///tmp/build/80754af9/parameterized_1610482129737/work
 phonenumbers==8.13.7
 Pillow==9.4.0
 pluggy==1.0.0
+ply==3.11
+protobuf==4.22.3
+pyasn1==0.5.0
+pyasn1-modules==0.3.0
 pycparser==2.21
+pycryptodomex==3.17
 PyJWT==2.6.0
+pyparsing==3.0.9
+pysmi==0.3.4
+pysnmp==4.4.12
 PySocks==1.7.1
 pysrt==1.1.2
 pytest==7.2.1
 pytest-django==4.5.2
 pytest-dotenv==0.5.2
 pytest-watch==4.2.0
+python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
 python-dotenv==0.21.1
 pytz==2022.7.1
+rcssmin==1.1.1
+requests==2.28.2
+rjsmin==1.2.1
+rsa==4.9
 selenium==4.8.2
+six @ file:///tmp/build/80754af9/six_1644875935023/work
 sniffio==1.3.0
 sortedcontainers==2.4.0
+soupsieve @ file:///C:/b/abs_a989exj3q6/croot/soupsieve_1680518492466/work
 sqlparse==0.4.3
+text-unidecode @ file:///Users/ktietz/demo/mc3/conda-bld/text-unidecode_1629401354553/work
 tomli==2.0.1
 trio==0.22.0
 trio-websocket==0.10.1
 tzdata==2022.7
+uritemplate==4.1.1
 urllib3==1.26.15
 watchdog==2.2.1
 wincertstore==0.2

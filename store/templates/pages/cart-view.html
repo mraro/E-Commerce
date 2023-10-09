@@ -8,30 +8,53 @@
 {% block 'content' %}
 {{current_cart}}
 <div class="main-content-container">
-    <div class="content-cart">
-    {% for obj in current_cart %}
-        <div class="cart-peace">
-            <a href={{ obj.e_commerce.get_absolute_url }}>
-            <img class='img-cart-peace' src={{obj.e_commerce.get_default_image}} alt="">
-            <div class='title-cart-peace'><h3>{{obj.e_commerce}}</h3><span>{{obj.e_commerce.description}}</span></div>
-            <div class="qtity-cart-peace">
-                <p>{{obj.qtde}}</p>
-            
-                <form action={% url "store:cart" %} method='post'>
-                    {% csrf_token %}
-                    <input type="hidden" name="_method" value="delete">
-                    <input type="hidden" value={{obj.pk}} name="id-obj-to-remove">
-                    <button type='submit' class="remove-all">❌</button>
-                </form>
+    <div class="content-cart-view">
+        {% for obj in current_cart %}
+            <div class="cart-peace">
+                <a class="link-img-cart-view" href={{ obj.e_commerce.get_absolute_url }}>
+                <img class="img-cart-view" src={{obj.e_commerce.get_default_image}} alt="">
+                <div>
+                    <h3 class="title-cart-view">{{obj.e_commerce.title}}</h3>
+                    <p class="descripition-cart-view">{{obj.e_commerce.description}}</p>
+                </div>
+                </a>
+                {% comment %} <div class="qtde-select-cart-view">
+                    <p>{{obj.qtde}}</p>
+                </div> {% endcomment %}
 
+                <form class="remove-all-cart-view" action={% url "store:cart" %} method='post'>
+                    {% csrf_token %}
+
+
+                    <input name="number" type="number" value="{{obj.qtde}}">
+
+                    <input type="hidden" name="_method" value="update">
+                    <input type="hidden" value={{obj.e_commerce.pk}} name="id-obj-to-update">
+                    <button type='submit' class="update-qtde-cart-view">Update Quantity</button>
+                </form>
+                <div>
+                    <button class='less-qtde-cart-view' onclick="dec(this)">-</button>
+                    <button class='add-qtde-cart-view' onclick="inc(this)">+</button>  
+                  </div>
             </div>
-        </a>
-        </div>
-        <br>
+     
 
         {% empty %}
-        <a href={% url "store:home" %}> <h1>Cart empty add someone here </h1></a>
-    {% endfor %}
+            <a href={% url "store:home" %}> <h1>Cart empty add something here </h1></a>
+        {% endfor %}
     </div>
 </div>
+<script>
+    function inc(button) {
+        let numberInput = button.parentElement.parentElement.querySelector('[name="number"]');
+        numberInput.value = parseInt(numberInput.value) + 1;
+    }
+    
+    function dec(button) {
+        let numberInput = button.parentElement.parentElement.querySelector('[name="number"]');
+        if (parseInt(numberInput.value) > 0) {
+            numberInput.value = parseInt(numberInput.value) - 1;
+        }
+    }
+</script>
 {% endblock 'content' %}

@@ -1,4 +1,12 @@
 {% load static %}
+{% load compress %}
+{% compress css %}
+    <link type="text/x-scss" href="{% static 'scss/style-especial.scss' %}"    
+     rel="stylesheet" media="screen">
+{% endcompress %}
+
+
+
 
 <form   
     action="{{ form_action }}" 
@@ -12,32 +20,54 @@
     
 
     {% csrf_token %}
+    <div class="container">
     {% for field in form %}
+         {% if field.name == 'category' %}{% comment %} para separar dois containers de objetos {% endcomment %}
+    </div>
+    <div class="container"> 
+        {% endif %}
+        {% if field.name != 'cover' %}
         
-        <div class="content-label {{ field.name }}">
+        <div class="item {{ field.name }}">
             <label for="{{ field.id_for_label }}">{{ field.label }} </label>
             
             {{ field }}
             {% if field.help_text %}
                 <div class="help-text">{{ field.help_text }}</div> 
-                {% endif %}
-
-{% comment %}     
-            {% if field.name == 'cover' and field.value.url %}
-                
-                <img id="preview" src="{{ field.value.url }}">
-            {% endif %} {% endcomment %}
-        </div> 
-        <div class="errors-content">
-            {% if field.errors %}
-                {{field.errors}}
             {% endif %}
-        </div>
-    {% endfor %}
-        <script src="{% static 'js/script.js' %}"></script>
+        </div> 
+        {% else %}
+        {% for x in field.value %}
+        <div class='upload__img-box'><div style='background-image: url('{{x}}')' data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'><div class='upload__img-close'></div></div></div>";
+        
 
-        <button id="button-form" type='submit'>
-            <span class="box span-2"><b> {{ form_button }} </b></span>
-        </button>
+        {% endfor %}
+
+            <div class="upload__box">
+                <div class="upload__btn-box">
+                  <label class="upload__btn">
+                    <p>Upload images</p>
+                    {{field}}
+                  </label>
+                </div>
+                <div class="upload__img-wrap"></div>
+              </div>
+               
+        {% endif %} 
+            <div class="errors-content">
+                {% if field.errors %}
+                    {{field.errors}}
+                {% endif %}
+            </div>
+    {% endfor %}
+    <button id="button-save-form" class='item span-2' type='submit'>
+        <span> {{ form_button }} </span>
+    </button>
+    </div>    
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+        <script src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'js/script-imgs-preview.js' %}"></script>
+
+        
    
 </form>

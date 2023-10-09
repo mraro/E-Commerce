@@ -65,14 +65,30 @@
 	width: 20rem;
 	height: 20rem;
 	background: rgba(255, 255, 255, 0.445);
+	cursor: pointer;
+
 }
-.object-view-detail{
-	width: 45rem;
-}
-.object-view-detail .obj-img{
+.div-img-grande{
 	width: 40rem;
 	height: 40rem;
-	margin: 1rem 1rem;
+	max-width: 40rem;
+	margin: 5px;
+}
+img.img-grande{
+	width: 40rem;
+	height: 40rem;
+	object-fit: none;
+  object-position: 5px 10%;
+}
+.object-view-detail{
+	width: 40rem;
+	height: 40rem;
+	max-width: 40rem;
+}
+.object-view-detail .obj-img{
+	width: 5rem;
+	height: 5rem;
+	background: rgba(255, 255, 255, 0.445);
 }
 .box-buying{
 	width: 30rem;

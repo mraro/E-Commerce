@@ -18,7 +18,7 @@ from utility.image_utils import resize_img
 
 
 class E_Category(models.Model):
-    name = models.CharField(max_length=65)
+    name = models.CharField(max_length=20)
 
     def __str__(self):
         return self.name  # !IMPORTANT ISSO FARA COM QUE NO ADMIN DO DJANGO RETORNE O NOME DO OBJETO
@@ -45,7 +45,7 @@ class Manager(models.Manager):
 
 
 class E_Composition(models.Model):
-    name = models.CharField(max_length=65)
+    name = models.CharField(max_length=16)
     description = models.TextField(verbose_name=_("Description"), null=True, blank=True)
 
     def __str__(self):
@@ -58,7 +58,7 @@ class E_Composition(models.Model):
 
 class E_Commerce(models.Model):  # ISSO É UMA TABELA NO DJANGO
     objects = Manager()
-    title = models.CharField(max_length=65, verbose_name=_("Title"))  # IS LIKE MYSQL VARCHAR(65)
+    title = models.CharField(max_length=40, verbose_name=_("Title"))  # IS LIKE MYSQL VARCHAR(65)
     description = models.TextField(verbose_name=_("Description"))
     slug = models.SlugField(unique=True)
     price = models.FloatField(default=1, verbose_name=_("Price"))
@@ -104,8 +104,9 @@ class E_Commerce(models.Model):  # ISSO É UMA TABELA NO DJANGO
             try:
                 urls = json.loads(self.cover)
                 return [url for url in urls][0]
-            except json.JSONDecodeError as e:
+            except (json.JSONDecodeError, IndexError) as e:
                 print("JSON Decode Error:", e)
+                return []
         return [] # TODO por uma imagem default aqui
 
     def set_multiview_images(self, images):

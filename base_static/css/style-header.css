@@ -16,12 +16,13 @@ header{
 .options-header{
 	width: 100%;
 	/* background-color: rgba(245, 222, 179, 0.158); */
-
+	margin: 0px;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	flex-wrap: nowrap;
 	align-content: center;
+	display: none;
 }
 .button-options-header{
 	color: white;

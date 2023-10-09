@@ -25,10 +25,8 @@ RANGE_PER_PAGE = int(os.environ.get("RANGE_PER_PAGE", 6))
 OBJ_PER_PAGE = int(os.environ.get("OBJ_PER_PAGE", 9))
 
 
-
-
 # THIS MAKES THE SAME THING OF func home {
-class ObjectListViewBase(ListView):
+class ObjectListViewBase(ListView, Base_Global_Objects):
     # This is what I can overwrite
     # allow_empty = True
     # queryset = None
@@ -58,7 +56,6 @@ class ObjectListViewBase(ListView):
         return querySetLight
 
     def get_context_data(self, *args, **kwargs):
-        nameSite = str(os.environ.get("NAME_ENTERPRISE", "No name"))
         # cart = self.get_full_cart(request=self.request)  # CARRINHO
         context = super().get_context_data(*args, **kwargs)
         pages = make_pagination(self.request, context.get('goods'), RANGE_PER_PAGE, OBJ_PER_PAGE)
@@ -69,8 +66,9 @@ class ObjectListViewBase(ListView):
              'pages': pages,
              'categories': category,
              'language': language,
-             'nameSite': nameSite,
-             # 'cart': cart
+             'nameSite': self.store_name,
+             'current_cart': self.get_full_cart(request=self.request),
+
              }
         )
         return context  # UPDATE CONTEXT, IN THE OTHER WORDS, CUSTOMIZE WEB TEMPLATE WITH MY PAGINATION FUNC
@@ -103,7 +101,8 @@ class CategoryView(ObjectListViewBase):
         pages = make_pagination(self.request, goods, RANGE_PER_PAGE, OBJ_PER_PAGE)
         context.update(
             {
-                # 'goods': medicine,
+                'current_cart': self.get_full_cart(request=self.request),
+
                 'goods': pages['goods_page'],
                 'pages': pages,
                 'categoryTitle': f'{goods[0].category.name}',  # ISSO É PY: F'{ VARIAVEL}' RETORNA STRING
@@ -138,6 +137,7 @@ class SearchView(ObjectListViewBase):
         pages = make_pagination(self.request, context.get('goods'), RANGE_PER_PAGE, OBJ_PER_PAGE)
         context.update(
             {
+                'current_cart': self.get_full_cart(request=self.request),
                 'goods': pages['goods_page'],
                 'pages': pages,
                 'search_done': var_site,
@@ -169,6 +169,7 @@ class TagView(ObjectListViewBase):
         pages = make_pagination(self.request, context.get('goods'), RANGE_PER_PAGE, OBJ_PER_PAGE)
         context.update(
             {
+                'current_cart': self.get_full_cart(request=self.request),
                 'goods': pages['goods_page'],
                 'pages': pages,
                 # 'title': var_site
@@ -177,7 +178,7 @@ class TagView(ObjectListViewBase):
         return context
 
 
-class Goods_View(DetailView):
+class Goods_View(DetailView, Base_Global_Objects):
     # DETAIL VIEW WAITS PK
 
     model = E_Commerce
@@ -186,11 +187,11 @@ class Goods_View(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(Goods_View, self).get_context_data()
-        nameSite = str(os.environ.get("NAME_ENTERPRISE", "No name"))
 
         context.update({
+            'current_cart': self.get_full_cart(request=self.request),
             'is_detail': True,
-            'nameSite': nameSite,
+            'nameSite': self.store_name,
         })
         return context
 
@@ -202,36 +203,21 @@ class Cart_View(TemplateView, Base_Global_Objects):
     def get(self, request, *args, **kwargs):
 
         current_cart = self.get_full_cart(request=request)
-        print("CURRENT ",current_cart)
-        kwargs.update({'current_cart':current_cart,
+
+        kwargs.update({'current_cart': current_cart,
                        'nameSite': self.store_name,
                        })
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        if request.POST.get("_method") == 'delete': # DROP DO CARRINHO
-            print()
-            goods = E_Cart.objects.get(pk=request.POST.get('id-obj-to-remove'))
-            titulo = goods.e_commerce.title
-            translated_success = _('deleted')
-            translated_fail = _("wasn't deleted")
-            if goods.delete():
-                messages.success(self.request, f"{titulo} {translated_success}!")
-            else:
-                messages.error(self.request, f"{titulo} {translated_fail}!")
-
+        if request.POST.get("_method") == 'update':  # DROP DO CARRINHO
+            self.update_item_cart(request)
         else:
             id_obj = request.POST.get("id-obj")
             qtd = request.POST.get("qtd")
 
             self.set_item_cart(request=request, id_obj=id_obj, qtd_bought=qtd)
-            print("after ", request.session['cart_session'])
-
-            # return self.get(request, *args, **kwargs)
 
         return redirect(reverse('store:cart'))
 
-    def delete(self, request, *args, **kwargs):
-        print("DELETE")
-        return self.get(request, *args, **kwargs)

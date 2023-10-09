@@ -9,7 +9,7 @@
 
     --font-primary:  Verdana, Arial;
     --font-size-search: 1.5em;
-    --font-color: #e9e9e9;
+    --font-color: #000000;
     --font-color-secundary: rgb(83, 174, 248);
 
     --color-info-dark: #4d86c4;
@@ -37,14 +37,16 @@ body {
 
 	margin: 0px;
 	/*background: var(--color-primary-dark);*/
-	background: linear-gradient(90deg, var(--color-background) 10%, var(--color-background-secundary) 90%);
+	/* background: linear-gradient(90deg, var(--color-background) 10%, var(--color-background-secundary) 90%); */
 	/* flex: 1 0 auto; */
 	font-family: var(--font-primary);
+	background: linear-gradient(270deg, #03a9f4, #cc39a4, #ffb5d2);
 
 }
 img{
 width: 100%;
-/* height: 100%; */
+height: 100%;
+object-fit: fill
 }
 table {
 background-color: white;
@@ -161,36 +163,158 @@ color: #666666;
 }
 
 /* CARRINHO ############################################### */
-.content-cart{
-    margin: 1rem auto;
-    width: 90%;
+/* Style the container of the cart items */
+.content-cart-view {
+	width: 90%;
+	margin: 0 auto;
+	background: #4a599c67;
+  }
+  
+  /* Style the cart item */
+  .cart-peace {
+	background: #4a9c5d;
+	margin: 0 auto;
+
+	width: 90%;
+	height: 10rem;
+	display: flex;
+    justify-content: center; /* Alinhar horizontalmente ao centro */
+    align-items: flex-start; /* Alinhar verticalmente ao topo */
+    gap: 10px; /* Espaço entre os itens */
+	padding: 1rem;
+  }
+  
+  .img-cart-view {
+	width: 11rem;
+	height: 8rem;
+	background-color: #8f347173;
+	align-self: center;
+	margin: 0;
+	padding: 0;
+  }
+  
+  .link-img-cart-view {
+	display: flex;
+    justify-content: center; /* Alinhar horizontalmente ao centro */
+    align-items: flex-start; /* Alinhar verticalmente ao topo */
+    gap: 10px; /* Espaço entre os itens */
+  }
+
+  .title-cart-view {
+	padding: 10px;
+  }
+  .descripition-cart-view {
+	padding: 10px;
+	height: 4.0rem;
+
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+  }
+  .qtde-select-cart-view {
+	padding: 10px;
+    border: 1px solid #ccc;
+
+  }
+  
+  .remove-all-cart-view {
+	padding: 10px;
+	height: 100%;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+	align-self: center;
+	margin: auto 0 ;
+
+  }
+  
+
+  .number-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 120px; /* Ajuste a largura conforme necessário */
+    margin: 10px;
 }
-.cart-peace{
-    background: #6666663a;
-    width: 100%;
-    height: 8rem;
+
+.quantity-cart {
+    width: 50px; /* Ajuste a largura conforme necessário */
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    outline: none;
+}
+.update-qtde-cart-view{
 
 }
-.img-cart-peace{
-    width: 6rem;
-    height: 6rem;
-    margin: 1rem;
-    background: #6666663a;
-    display: inline;
+.btn-decrement,
+.btn-increment {
+    width: 30px;
+    height: 30px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
 }
-.title-cart-peace{
-    background: #6666663a;
-    width: 75%;
-    float: left;
-    height: 6rem;
-    margin: 1rem;
 
+.btn-decrement:hover,
+.btn-increment:hover {
+    background-color: #0056b3;
 }
-.qtity-cart-peace{
-    background: #6666663a;
-    padding: 1rem;
-    margin: 1rem;
-    width: 4rem;
-    height: 4rem;
-    float: right;
-}
+
+
+  
+ /* MIDIAS SOCIAIS #################### */
+ .main_back {
+	position: absolute;
+	border-radius: 10px;
+	transform: rotate(90deg);
+	width: 11em;
+	height: 11em;
+	z-index: -2;
+	box-shadow: inset 0px 0px 180px 5px #ffffff;
+  }
+  
+  .main-social {
+	display: none;
+
+	position: fixed;
+	bottom: 20%;
+	left: 1rem;
+	/* display: flex; */
+	flex-wrap: wrap;
+	width: 4em;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+  }
+  
+  .card {
+	width: 60px;
+	height: 60px;
+	border-top-left-radius: 10px;
+	background: lightgrey;
+	transition: .4s ease-in-out, .2s background-color ease-in-out, .2s background-image ease-in-out;
+	background: rgba(255, 255, 255, 0.596);
+	backdrop-filter: blur(5px);
+	border: 1px solid transparent;
+	-webkit-backdrop-filter: blur(5px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 1.5rem;
+	cursor: pointer;
+	border: #000000 solid 1px;
+  }
+  
+
+ 

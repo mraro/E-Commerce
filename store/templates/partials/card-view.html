@@ -2,21 +2,38 @@
 
 {% if obj.is_available %}
 		{% if is_detail %} {% comment %} DETAIL PAGE {% endcomment %}
+		
+
+
 			<div class="merchan">
 				<a href="http://" target="_blank" rel="noopener noreferrer"></a>
 			</div>
 
 			<div class="object-view-detail">
+				<div class="div-img-grande">
+					<img id="img-grande" src={{obj.get_multiview_images_list.0}} alt="Imagem em tamanho real">
+				</div>
 				{% for img in obj.get_multiview_images_list %}
-					<img class="obj-img" src={{img}} >
+					<img class="obj-img" onclick="selecionarImagem(this)" src={{img}} >
 				{% endfor %}
+
+
+				<script>
+					function selecionarImagem(imagem) {
+						// Exibe a imagem em tamanho real no campo maior
+						document.getElementById('img-grande').src = imagem.src;
+					}
+					
+				</script>
+
+
 
 		{% else %} {% comment %} MAIN PAGE {% endcomment %}
 			<div class="object-view">
 				<a  href=" {{ obj.get_absolute_url }} ">
 				
-					
-					{% if obj.cover.url != "" %}
+					{{obj.get_default_image|length}}
+					{% if obj.cover.url != "" and obj.get_default_image|length != 0 %}
 						<img class="obj-img" src={{obj.get_default_image}} >
 					{% else %}
 						<img class="obj-img" src="/media/static/images/default.jpg" >
@@ -82,7 +99,7 @@
 				<label class="object-view-price-detail">  R$ {{ obj.price|floatformat:2 }}  </label>
 
 				<input type="hidden" value={{obj.id}} name="id-obj">
-				<p class="object-view-quantity-detail">Quantity<input type="number" name="qtd" id="qtd-buy"></p>
+				<p class="object-view-quantity-detail">Quantity<input type="number"required min='1' max='100' name="qtd" value="1" id="qtd-buy"></p>
 				<button id='button-form' type='submit'><span class="box span-2"><b> Add Cart</b></span></button>
 
 			</form>
@@ -95,3 +112,4 @@
 		</div>
 	{% endif %} {% comment %} end DETAIL PAGE {% endcomment %}
 {% endif %}
+

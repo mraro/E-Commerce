@@ -10,6 +10,12 @@
     
     <div class="dashboard-container-object-views">
         <table>
+            <tr>
+                <th>delete</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Type</th>
+            </tr>
             {% for obj in goods %}
             <tr>
                 <td class='td-delete'>    
@@ -19,11 +25,10 @@
                     </form>
                 </td>
                 
-                <a href={% url 'authors:edit' obj.id %}> 
-                    <td> {{ obj.title }} </td>
+                    <td> <a href={% url "authors:edit" obj.pk %}>{{ obj.title }}</a> </td>
                         <td>  R$ {{ obj.price|floatformat:2 }}</td>
                             {% comment %} <td>   {% translate "Category" %}</td> {% endcomment %}
-                                <td>  {{ obj.category }}</td> </a>
+                                <td>  {{ obj.category }}</td> 
                 
             </tr>
             {% empty %}

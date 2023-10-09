@@ -31,10 +31,10 @@
 
     <div class="options-header">
         <ul>
-            <a href="" class='button-options-header'><li>Colares</li></a>
-            <a href="" class='button-options-header'><li>Brincos</li></a>
-            <a href="" class='button-options-header'><li>Anéis</li></a>
-            <a href="" class='button-options-header'><li>Conjuntos</li></a>
+            <a href='{% url "store:search" %}?q=colares' class='button-options-header'><li>Colares</li></a>
+            <a href='{% url "store:search" %}?q=brincos' class='button-options-header'><li>Brincos</li></a>
+            <a href='{% url "store:search" %}?q=aneis' class='button-options-header'><li>Anéis</li></a>
+            <a href='{% url "store:search" %}?q=conjunt' class='button-options-header'><li>Conjuntos</li></a>
 
         </ul>
     </div>

@@ -45,17 +45,30 @@
     transform: translateX(-50%);
 }
 /* #### FORMS ################################################################################# */
+.container{
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	background-color: aliceblue;
+	border-radius: 0.5rem;
+	-webkit-border-radius: 0.5rem;
+	-moz-border-radius: 0.5rem;
+	-ms-border-radius: 0.5rem;
+	-o-border-radius: 0.5rem;
+}
+.item{
+	flex-grow: 1;
+	flex-basis: 200;
+	margin: 0.5rem;
+}
+
 .form-content{
 	/* position: absolute; */
 	background-color: white;
 
 	z-index: 30;
-	font-size: 1.4rem;
-	width: 900px;
+	width: 80%;
 	margin: 1% auto;
-	display: flex;
-	flex-direction: column;
-	padding: 0.5rem;
 	box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 	border-radius: 0.5rem;
 	-webkit-border-radius: 0.5rem;
@@ -63,23 +76,22 @@
 	-ms-border-radius: 0.5rem;
 	-o-border-radius: 0.5rem;
 	}
-	input, select, button, textarea{
+	input, select, button, textarea, label{
 	font-size: 1.4rem;
 	/* padding: 0.39rem  1.0rem; */
+	border-radius: 0.6rem;
+
 	margin: 0.2rem;
 	max-width: 99%;
+	display: block;
 	}
 	textarea {
-		width: 95%; /* Ocupar 100% da largura do contêiner pai */
+		width: 100%; /* Ocupar 100% da largura do contêiner pai */
 		height: 10rem; /* Altura fixa de 20rem (320px, aproximadamente) */
 		border: 1px solid #ccc; /* Borda opcional para o textarea */
 		padding: 10px; /* Espaçamento interno dentro do textarea */
 	}
-	.cover{
-		max-width: 40rem;
-		max-height: 40rem;
-		margin: 0 auto;
-	}
+
 	#help-text{
 	font-size: smaller;
 	color: var(--color-success-dark);
@@ -97,12 +109,104 @@
 	grid-column: span 2;
 	flex: 1 1 100%;
 	}
+
+
+	  .quantity input{
+		width: 100%;
+	  }
+	  .title input{
+		width: 100%;
+
+	  }
+	  .price input{
+		width: 100%;
+
+	}
+
+
+	  .category select{
+		max-width: 30rem;
+		width: 100%;
+
+	  }
+	  .category{
+		width: 30%;
+	  }
+	  .composition select{
+		max-width: 30rem;
+		width: 100%;
+
+
+	  }
+	  .composition{
+		width: 30%;
+	  }
+	  .tags{
+		height: 10rem;
+		width: 30%;
+	  }
+	  .tags select{
+		height: 9rem;
+		max-width: 30rem;
+		width: 100%;
+
+	  }
+	  #button-save-form{
+	  font-weight: bold;
+	  display: inline-block;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+      min-width: 116px;
+      padding: 5px;
+      transition: all .3s ease;
+      cursor: pointer;
+      border: 2px solid;
+      background-color: #4045ba;
+      border-color: #4045ba;
+      border-radius: 10px;
+      line-height: 26px;
+      font-size: 14px;
+	  }
+	  #button-save-form:hover {
+        background-color: unset;
+        color: #4045ba;
+        transition: all .3s ease;
+      }
 /* cover */
-	.container{
-		margin-top: 5rem;
-		margin-left: auto;
-		margin-right: auto;
+
+	  .upload__box{
+		border-radius: 1rem;
+		background: var(--color-background-secundary);
+		min-height: 20rem;
+		overflow-x: scroll;
+		overflow-y: hidden;
+		text-overflow: ellipsis;
 	  }
-	  .card{
-		margin: auto;
-	  }
+	  .upload__img-box{
+		width: 10rem !important;
+		height: 10rem !important;
+	  }	
+	  .cover{
+		max-width: 100%;
+		max-height: 40rem;
+		margin: 0 auto;
+	}
+
+
+
+
+
+
+
+	@media (max-width: 768px) {
+		/* Estilos para dispositivos móveis aqui */
+		/* .form-content{
+			width: 90rem;
+
+		} */
+		.container{
+			max-width: 20rem;
+
+		}
+	}
