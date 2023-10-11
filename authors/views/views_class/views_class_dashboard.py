@@ -51,24 +51,30 @@ class BaseObjectClassedView(View, Base_Global_Objects):
     def get(self, request, pk=None):
         """ WHEN HAS A GET DATA TO USE """
         goods = self.get_objects_to_view(pk)
+        initial_covers = []
         if pk is not None:
-            goods.cover = goods.get_images()
+            initial_covers = goods.get_images()
         # files = <MultiValueDict: {'cover': [<InMemoryUploadedFile: HD 1.jpg (image/jpeg)>, <InMemoryUploadedFile: HD 2.jpg (image/jpeg)>, <InMemoryUploadedFile: HD 3.jpg (image/jpeg)>, <InMemoryUploadedFile: HD 4.jpg (image/jpeg)>]}>
         form = EditObjectForm(  # EditObjectForm is class made to load fields, clean e some think else
             instance=goods,  # fill the fields with sent data
             files=request.FILES or None,
             data=request.POST or None,
+            initial_covers=initial_covers,
         )
         return self.render_view(form, pk)
 
     def post(self, request, pk=None):
-        goods = self.get_objects_to_view(pk)
 
+        goods = self.get_objects_to_view(pk)
+        initial_covers = []
+        if pk is not None:
+            initial_covers = goods.get_images()
         author = models.User.objects.get(username=request.user)
-        form = EditObjectForm(
-            data=request.POST or None,  # receive a request data or none
+        form = EditObjectForm(  # EditObjectForm is class made to load fields, clean e some think else
+            instance=goods,  # fill the fields with sent data
             files=request.FILES or None,
-            instance=goods  # if none receive what will be edited
+            data=request.POST or None,
+            initial_covers=initial_covers,
         )
 
         if form.is_valid():
@@ -96,6 +102,7 @@ class BaseObjectClassedView(View, Base_Global_Objects):
                 messages.success(request, _('Product created and send to analise'))
 
             return redirect(reverse('authors:dashboard'))
+
 
         # return self.render_view(form, pk)
         # return redirect(reverse('authors:edit', kwargs={'pk':pk}))

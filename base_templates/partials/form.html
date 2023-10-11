@@ -7,7 +7,6 @@
 
 
 
-
 <form   
     action="{{ form_action }}" 
     method="POST" 
@@ -38,9 +37,8 @@
         </div> 
         {% else %}
         {% for x in field.value %}
-        {{x}}
         <div class='upload__img-box'>
-            <div style='background-image: url("{{x}}")' class='img-bg'>
+            <div name='old-imgs' style='background-image: url("{{x.cover.url}}")' class='img-bg'>
             <div class='upload__img-close'></div>
             </div>
         </div>

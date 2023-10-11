@@ -16,6 +16,12 @@ from commerce.settings import BASE_DIR
 class EditObjectForm(forms.ModelForm):
     """ can you pass args to fill the fields, a dict with same name key with (instance="dict") """
 
+    def __init__(self, *args, **kwargs):
+        initial_covers = kwargs.pop('initial_covers', None)
+        super(EditObjectForm, self).__init__(*args, **kwargs)
+
+        if initial_covers:
+            self.fields['cover'].initial = initial_covers
     # add_attr(self.fields.get('slug'), 'type', 'hidden')
 
     title = forms.CharField(min_length=4, max_length=40, label=_('Title: '))
