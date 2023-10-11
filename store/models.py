@@ -44,6 +44,9 @@ class Manager(models.Manager):
             'tags')  # THIS IMPROVE READ DATABASE (WORKS ON FOREIGN KEY) # noqa
 
 
+##################################################################
+
+
 class E_Composition(models.Model):
     name = models.CharField(max_length=16)
     description = models.TextField(verbose_name=_("Description"), null=True, blank=True)
@@ -85,34 +88,50 @@ class E_Commerce(models.Model):  # ISSO É UMA TABELA NO DJANGO
     # )
     # MANY TO MANY
     tags = models.ManyToManyField(TAG, verbose_name="TAG", blank=True)
+
     # cover = models.ManyToManyField(Covers, verbose_name="Images")
     # cover = models.ImageField(upload_to='covers/%Y/%m/%d/',
     #                           verbose_name="Cover/Image")  # campo de imagem
-    cover = models.TextField(blank=True, null=True)
+    # cover = models.TextField(blank=True, null=True)
 
-    def get_multiview_images_list(self):
-        if self.cover:
-            try:
-                urls = json.loads(self.cover)
-                return [url for url in urls]
-            except json.JSONDecodeError as e:
-                print("JSON Decode Error:", e)
-        return []
-
-    def get_default_image(self):
-        if self.cover:
-            try:
-                urls = json.loads(self.cover)
-                return [url for url in urls][0]
-            except (json.JSONDecodeError, IndexError) as e:
-                print("JSON Decode Error:", e)
-                return []
-        return [] # TODO por uma imagem default aqui
-
-    def set_multiview_images(self, images):
-        self.multiview_images = json.dumps(images)
+    # def get_multiview_images_list(self):
+    #     if self.cover:
+    #         try:
+    #             urls = json.loads(self.cover)
+    #             return [url for url in urls]
+    #         except json.JSONDecodeError as e:
+    #             print("JSON Decode Error:", e)
+    #     return []
+    #
+    # def get_default_image(self):
+    #     if self.cover:
+    #         try:
+    #             urls = json.loads(self.cover)
+    #             return [url for url in urls][0]
+    #         except (json.JSONDecodeError, IndexError) as e:
+    #             print("JSON Decode Error:", e)
+    #             return []
+    #     return []  # TODO por uma imagem default aqui
+    #
+    # def set_multiview_images(self, images):
+    #     self.multiview_images = json.dumps(images)
 
     # (blank=True permite campo vazio, default é a imagem padrão caso não exista
+
+    def get_images(self):
+        return Covers.objects.filter(e_commerce_obj=self)
+
+    def set_images(self, cover):
+        position = 0
+
+        for file in cover:
+            position += 1
+
+            # Gera um nome único para cada arquivo
+            filename = f"imagem_{self.title}_{self.category}_{self.composition}_{position}"
+            # Remove acentuação e caracteres especiais
+
+            Covers(name_img=filename, cover=file, e_commerce_obj=self).save()
 
     def __str__(self):
         return self.title
@@ -126,9 +145,17 @@ class E_Commerce(models.Model):  # ISSO É UMA TABELA NO DJANGO
 
 
 class Covers(models.Model):
+    name_img = models.CharField(max_length=60)
     cover = models.ImageField(upload_to='covers/%Y/%m/%d/',
                               verbose_name="Cover/Image")  # campo de imagem
-    project = models.ForeignKey(E_Commerce, on_delete=models.CASCADE)
+    e_commerce_obj = models.ForeignKey(E_Commerce, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name_img  # !IMPORTANT ISSO FARA COM QUE NO ADMIN DO DJANGO RETORNE O NOME DO OBJETO
+
+    class Meta:
+        verbose_name = _("Cover")
+        verbose_name_plural = _("Images")
 
 
 # Carrinho

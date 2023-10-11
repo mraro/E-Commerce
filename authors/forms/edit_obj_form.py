@@ -8,15 +8,15 @@ from django.forms import ClearableFileInput
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _  # TRANSLATE as _
 
-from store.models import E_Commerce, Covers
-
+from store.models import E_Commerce
+from django.db.models import Q
 from commerce.settings import BASE_DIR
 
 
 class EditObjectForm(forms.ModelForm):
     """ can you pass args to fill the fields, a dict with same name key with (instance="dict") """
 
-        # add_attr(self.fields.get('slug'), 'type', 'hidden')
+    # add_attr(self.fields.get('slug'), 'type', 'hidden')
 
     title = forms.CharField(min_length=4, max_length=40, label=_('Title: '))
     slug = forms.CharField(widget=forms.HiddenInput(), empty_value=" ", label="")  # HERE I HAD TO GIVE SOME FAKE DATA
@@ -28,14 +28,16 @@ class EditObjectForm(forms.ModelForm):
         "type": "File",
         "class": "upload__inputfile",
         "multiple": "True",
-        "data-max_length" : "6",
-        "data-min_length": 1,
+        "data-max_length": "6",
+        "data-min_length": "1",
     }), label="", required=False)
     # cover = forms.ClearableFileInput(attrs={'multiple': True})
 
     def clean_cover(self):
         if len(self.files.getlist('cover')) == 0:
             raise ValidationError(_('One image at least!'))
+        else:
+            return self.files['cover']
 
     def clean_slug(self):
         # print("Clean Slug")
@@ -50,11 +52,10 @@ class EditObjectForm(forms.ModelForm):
 
     def clean_title(self):
         title = self.cleaned_data.get('title')
-        exist = E_Commerce.objects.filter(title=title).exists()
+        exist = E_Commerce.objects.filter(~Q(pk=self.instance.pk), title=title).exists()
         if exist:
             raise ValidationError(_('This Title already in use'))
         return title
-
 
     class Meta:
         model = E_Commerce  # database

@@ -37,30 +37,33 @@ class BaseObjectClassedView(View, Base_Global_Objects):
             title_site = _('Edit')
         else:
             title_site = _('Create')
-        return render(self.request, 'pages/edit_obj_view.html', context={
-            'form': form,
-            'form_button': _('Save'),
-            'edit': 'tru',
-            'title': title_site,
-            'nameSite': self.store_name,
-        })
+        return render(self.request,
+                      'pages/edit_obj_view.html',
+                      content_type="text/html",
+                      context={
+                          'form': form,
+                          'form_button': _('Save'),
+                          'edit': 'tru',
+                          'title': title_site,
+                          'nameSite': self.store_name,
+                      })
 
     def get(self, request, pk=None):
         """ WHEN HAS A GET DATA TO USE """
         goods = self.get_objects_to_view(pk)
-        cover = str(goods.cover)
-        goods.cover = json.loads(cover)
-        print(goods.cover)
+        if pk is not None:
+            goods.cover = goods.get_images()
         # files = <MultiValueDict: {'cover': [<InMemoryUploadedFile: HD 1.jpg (image/jpeg)>, <InMemoryUploadedFile: HD 2.jpg (image/jpeg)>, <InMemoryUploadedFile: HD 3.jpg (image/jpeg)>, <InMemoryUploadedFile: HD 4.jpg (image/jpeg)>]}>
         form = EditObjectForm(  # EditObjectForm is class made to load fields, clean e some think else
             instance=goods,  # fill the fields with sent data
-            # files=E_Commerce.objects.get_multiview_images_list()
+            files=request.FILES or None,
+            data=request.POST or None,
         )
-
         return self.render_view(form, pk)
 
     def post(self, request, pk=None):
         goods = self.get_objects_to_view(pk)
+
         author = models.User.objects.get(username=request.user)
         form = EditObjectForm(
             data=request.POST or None,  # receive a request data or none
@@ -68,44 +71,24 @@ class BaseObjectClassedView(View, Base_Global_Objects):
             instance=goods  # if none receive what will be edited
         )
 
-        # breakpoint()
-
-
         if form.is_valid():
-
             instance = form.save(commit=False)
-
             multiview_images = []
-
-            position = 0
-            for file in form.files.getlist('cover'):
-                position += 1
-
-                # Gera um nome único para cada arquivo
-                filename = f"imagem_{instance.title}_{instance.category}_{instance.composition}_{position}_{file.name[-4:]}"
-                # Remove acentuação e caracteres especiais
-                filename = ''.join(
-                    c for c in unicodedata.normalize('NFD', filename) if unicodedata.category(c) != 'Mn')
-                # Remove espaços e mantém apenas o último ponto antes da extensão
-                filename = re.sub(r'\s+', '_', filename)  # Remove espaços duplicados
-                filename = re.sub(r'[^\w\s.-]', '', filename)
-                filename = re.sub(r'(?<=\w)(\s)(?=[^.]*\.[^.]*$)', '-', filename)
-
-                filepath = os.path.join("media/covers/", filename)
-                # Salva o arquivo no sistema de arquivos local
-                with open(filepath, 'wb') as destination:
-                    for chunk in file.chunks():
-                        destination.write(chunk)
-
-                # Adiciona o caminho do arquivo ao seu modelo ou lista de imagens
-                multiview_images.append('/' + filepath)
-
-            # Salva os caminhos das imagens em seu modelo ou como preferir
-            instance.cover = json.dumps(multiview_images)
-
             instance.is_available = True
             instance.author = author
             instance.save()
+            instance.set_images(form.files.getlist('cover'))
+            # filepath = os.path.join("media/covers/", filename)
+                # Salva o arquivo no sistema de arquivos local
+                # with open(filepath, 'wb') as destination:
+                #     for chunk in file.chunks():
+                #         destination.write(chunk)
+
+                # Adiciona o caminho do arquivo ao seu modelo ou lista de imagens
+                # multiview_images.append('/' + filepath)
+
+            # Salva os caminhos das imagens em seu modelo ou como preferir
+            instance.cover = json.dumps(multiview_images)
 
             if pk is not None:
                 messages.success(request, _('Product Saved'))
@@ -114,7 +97,9 @@ class BaseObjectClassedView(View, Base_Global_Objects):
 
             return redirect(reverse('authors:dashboard'))
 
-        return self.render_view(form, pk)
+        # return self.render_view(form, pk)
+        # return redirect(reverse('authors:edit', kwargs={'pk':pk}))
+        return self.get(request)
 
 
 @method_decorator(login_required(login_url='authors:login', redirect_field_name='next'), name='dispatch')
@@ -146,8 +131,7 @@ class DashboardView(ListView, Base_Global_Objects):
     # page_kwarg = "page"
     ordering = ['-id']  # ORDERBY
     template_name = 'pages/dashboard.html'
-    extra_context = {'nameSite': str(os.environ.get("NAME_ENTERPRISE", "No name")) }
-
+    extra_context = {'nameSite': str(os.environ.get("NAME_ENTERPRISE", "No name"))}
 
     def get_queryset(self):
         query = super().get_queryset()
